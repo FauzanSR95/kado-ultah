@@ -367,7 +367,7 @@ const FloatingParticles = () => {
 };
 
 // =====================================================
-//  FIREFLIES
+//  FIREFLIES (DIOPTIMASI UNTUK MOBILE)
 // =====================================================
 const Fireflies = () => (
   <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -376,7 +376,8 @@ const Fireflies = () => (
         style={{
           width: i % 3 === 0 ? 5 : 3, height: i % 3 === 0 ? 5 : 3,
           background: i % 4 === 0 ? '#ff99cc' : i % 4 === 1 ? '#ffb3d9' : '#ff66aa',
-          boxShadow: `0 0 ${i % 3 === 0 ? 10 : 6}px #ff80b4`,
+          // Menghapus boxShadow yang berat, diganti drop-shadow statis super ringan
+          filter: `drop-shadow(0 0 ${i % 3 === 0 ? 4 : 2}px #ff80b4)`,
         }}
         initial={{
           x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
@@ -398,17 +399,14 @@ const Fireflies = () => (
 //  MAIN APP
 // =====================================================
 export default function App() {
-  // STATE MANAGEMENT
-  const [step, setStep] = useState(-1); // <-- MULAI DARI -1 UNTUK PRE-GATE
+  const [step, setStep] = useState(-1); 
   const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState(false);
   const audioRef = useRef(null);
 
-  // STATE UNTUK HALAMAN PERTANYAAN (PRE-GATE)
   const [noCount, setNoCount] = useState(0);
   const [isYesClicked, setIsYesClicked] = useState(false);
 
-  // KUMPULAN TEKS TOMBOL NO
   const noTexts = [
     "Enggak", 
     "Eh, kepencet ya? 🤨", 
@@ -480,7 +478,7 @@ export default function App() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/cat-love.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
+                  <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">
@@ -526,7 +524,7 @@ export default function App() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/cat-love-ketiga.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
+                  <img src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4">
@@ -645,7 +643,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* ===== STEP 2 ===== */}
+        {/* ===== STEP 2 (DIOPTIMASI UNTUK MOBILE) ===== */}
         {step === 2 && (
           <motion.div key="letter"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(20px)' }}
@@ -672,8 +670,9 @@ export default function App() {
                 ))}
               </motion.div>
             </div>
-            <motion.img animate={{ opacity: [0.3,0.7,0.3], scale: [1,1.05,1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              src="/images/sparkles.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none mix-blend-screen opacity-30 z-10"
+            {/* Hapus mix-blend-screen agar HP tidak panas */}
+            <motion.img animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              src="/images/sparkles.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-20 z-10"
               onError={(e) => e.target.style.display='none'}/>
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -682,10 +681,18 @@ export default function App() {
               className="w-[88%] max-w-2xl bg-white/75 backdrop-blur-xl rounded-[2rem] p-5 md:p-12 shadow-[0_25px_50px_-12px_rgba(244,63,94,0.15)] border border-white text-center relative z-20 flex flex-col items-center"
             >
               <h2 className="font-pacifico text-3xl md:text-5xl text-pink-500 mb-4 md:mb-6 drop-shadow-sm">My Letter to You</h2>
-              <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-2 mb-6 md:mb-8 text-gray-700 leading-relaxed md:text-xl whitespace-pre-line font-medium text-left [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full">
-                {letterText.split('').map((char, index) => (
-                  <motion.span key={index} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.05, delay: index * 0.02 }}>{char}</motion.span>
-                ))}
+              <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-2 mb-6 md:mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+                
+                {/* Animasi teks diubah dari per-huruf menjadi Fade-In utuh agar bebas Lag */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
+                  className="whitespace-pre-line"
+                >
+                  {letterText}
+                </motion.div>
+
               </div>
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 onClick={() => setStep(3)}
@@ -696,7 +703,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* ===== STEP 3 ===== */}
+        {/* ===== STEP 3 (DIOPTIMASI UNTUK MOBILE) ===== */}
         {step === 3 && (
           <motion.div key="final"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2 }}
@@ -713,16 +720,10 @@ export default function App() {
               className="relative z-20 text-center flex flex-col items-center mt-auto mb-12 md:mb-16 px-4"
             >
               <motion.h1
-                animate={{
-                  opacity: [0.85,1,0.85],
-                  textShadow: [
-                    '0 0 12px #fb7185, 0 0 30px #fb718540',
-                    '0 0 28px #fb7185, 0 0 60px #fb718570, 0 0 100px #fb718530',
-                    '0 0 12px #fb7185, 0 0 30px #fb718540',
-                  ],
-                }}
-                transition={{ duration: 3.2, repeat: Infinity }}
-                className="font-pacifico text-4xl sm:text-5xl md:text-7xl text-rose-300 mb-2 drop-shadow-lg"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                // Animasi textShadow dihapus, diganti drop-shadow Tailwind statis super ringan
+                className="font-pacifico text-4xl sm:text-5xl md:text-7xl text-rose-300 mb-2 drop-shadow-[0_0_15px_rgba(251,113,133,0.8)]"
               >
                 Happy Birthday.
               </motion.h1>
