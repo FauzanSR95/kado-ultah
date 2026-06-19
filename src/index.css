@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme {
+  --font-pacifico: "Pacifico", cursive;
+  --font-quicksand: "Quicksand", sans-serif;
+}
