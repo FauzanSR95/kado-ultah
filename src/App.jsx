@@ -17,6 +17,36 @@ const easeOutElastic = (t) => {
 const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
 
 // =====================================================
+//  TYPEWRITER EFFECT (SUPER LIGHTWEIGHT ANTI-LAG)
+// =====================================================
+const TypewriterText = ({ text, delay }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let i = 0;
+    let timer;
+    const startTyping = () => {
+      timer = setInterval(() => {
+        if (i < text.length) {
+          setDisplayedText(text.slice(0, i + 1));
+          i++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 35); // Kecepatan ketik 35ms per huruf
+    };
+
+    const initialDelay = setTimeout(startTyping, delay);
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(timer);
+    };
+  }, [text, delay]);
+
+  return <span className="whitespace-pre-line">{displayedText}</span>;
+};
+
+// =====================================================
 //  CINEMATIC ROSE
 // =====================================================
 const CinematicRose = () => {
@@ -376,7 +406,6 @@ const Fireflies = () => (
         style={{
           width: i % 3 === 0 ? 5 : 3, height: i % 3 === 0 ? 5 : 3,
           background: i % 4 === 0 ? '#ff99cc' : i % 4 === 1 ? '#ffb3d9' : '#ff66aa',
-          // Menghapus boxShadow yang berat, diganti drop-shadow statis super ringan
           filter: `drop-shadow(0 0 ${i % 3 === 0 ? 4 : 2}px #ff80b4)`,
         }}
         initial={{
@@ -643,7 +672,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* ===== STEP 2 (DIOPTIMASI UNTUK MOBILE) ===== */}
+        {/* ===== STEP 2 (DENGAN TYPEWRITER EFEK YANG LANCAR JAYA) ===== */}
         {step === 2 && (
           <motion.div key="letter"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(20px)' }}
@@ -670,7 +699,6 @@ export default function App() {
                 ))}
               </motion.div>
             </div>
-            {/* Hapus mix-blend-screen agar HP tidak panas */}
             <motion.img animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               src="/images/sparkles.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-20 z-10"
               onError={(e) => e.target.style.display='none'}/>
@@ -681,19 +709,12 @@ export default function App() {
               className="w-[88%] max-w-2xl bg-white/75 backdrop-blur-xl rounded-[2rem] p-5 md:p-12 shadow-[0_25px_50px_-12px_rgba(244,63,94,0.15)] border border-white text-center relative z-20 flex flex-col items-center"
             >
               <h2 className="font-pacifico text-3xl md:text-5xl text-pink-500 mb-4 md:mb-6 drop-shadow-sm">My Letter to You</h2>
+              
               <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-2 mb-6 md:mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full">
-                
-                {/* Animasi teks diubah dari per-huruf menjadi Fade-In utuh agar bebas Lag */}
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
-                  className="whitespace-pre-line"
-                >
-                  {letterText}
-                </motion.div>
-
+                {/* Di sinilah Typewriter Murni dipanggil (Mulai ngetik di detik ke-1 setelah kartu muncul) */}
+                <TypewriterText text={letterText} delay={1000} />
               </div>
+
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 onClick={() => setStep(3)}
                 className="w-full md:w-auto bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3.5 px-10 rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer text-sm md:text-base">
@@ -722,7 +743,6 @@ export default function App() {
               <motion.h1
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                // Animasi textShadow dihapus, diganti drop-shadow Tailwind statis super ringan
                 className="font-pacifico text-4xl sm:text-5xl md:text-7xl text-rose-300 mb-2 drop-shadow-[0_0_15px_rgba(251,113,133,0.8)]"
               >
                 Happy Birthday.
