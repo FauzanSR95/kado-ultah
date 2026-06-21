@@ -303,7 +303,7 @@ export default function App() {
   }, []);
 
   const noTexts = ["Enggak", "Eh, kepencet ya? 🤨", "Loh, masih 'Enggak'?! 🧐", "Mulai ngajak ribut nih... 😤", "Yakin? Nanti nyesel lho 🫣", "Tega banget... 💔"];
-  const CORRECT_PIN = '071026';
+  const CORRECT_PIN = '100705';
 
   const timelineData = [
     { id: 1, title: 'That Captivating Smile', desc: 'Melihat senyummu selalu menjadi bagian terbaik dalam hariku.', img: 'foto1.jpg' },
@@ -353,7 +353,7 @@ export default function App() {
               {!isYesClicked ? (
                 <motion.div key="question" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full max-w-md">
                   <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md" onError={(e) => e.target.style.display = 'none'} />
-                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">Hai, sebelum lanjut... Kamu sayang aku nggak? 🥺</h2>
+                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">Hai, sebelum lanjut... Kamu sayang aku nggak?</h2>
                   <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 w-full min-h-[140px] relative px-2">
                     <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setIsYesClicked(true)}
                       style={{ fontSize: `${16 + noCount * 3}px`, padding: `${12 + noCount * 2}px ${24 + noCount * 3}px` }}
