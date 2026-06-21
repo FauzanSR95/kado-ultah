@@ -445,7 +445,7 @@ export default function App() {
     "Tega banget... 💔"
   ];
 
-  const CORRECT_PIN = '071026';
+  const CORRECT_PIN = '100705';
 
   const timelineData = [
     { id: 1, title: 'That Captivating Smile', desc: 'Melihat senyummu selalu menjadi bagian terbaik dalam hariku.', img: 'foto1.jpg' },
@@ -507,7 +507,7 @@ export default function App() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
+                  <img src="/images/cat-love.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">
@@ -553,7 +553,7 @@ export default function App() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
+                  <img src="/images/cat-love-ketiga.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4">
