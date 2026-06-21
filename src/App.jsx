@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
 // =====================================================
-//  EASING
+//  EASING & ANIMATION VARIANTS
 // =====================================================
 const easeOutBack = (t) => {
   const c1 = 1.70158, c3 = c1 + 1;
@@ -40,6 +40,49 @@ const TypewriterText = ({ text, delay }) => {
   }, [text, delay]);
 
   return <span className="whitespace-pre-line">{displayedText}</span>;
+};
+
+// =====================================================
+//  NEW: AURORA ANIMATED BACKGROUND (SUPER PREMIUM & RINGAN)
+// =====================================================
+const AuroraBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <motion.div
+      animate={{ scale: [1, 1.2, 1], x: [0, 60, 0], y: [0, 40, 0] }}
+      transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute -top-[10%] -left-[10%] w-[500px] h-[500px] rounded-full bg-rose-300/30 blur-[100px]"
+    />
+    <motion.div
+      animate={{ scale: [1, 1.3, 1], x: [0, -50, 0], y: [0, -60, 0] }}
+      transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      className="absolute top-[40%] -right-[10%] w-[400px] h-[400px] rounded-full bg-pink-400/20 blur-[100px]"
+    />
+    <motion.div
+      animate={{ scale: [1, 1.5, 1], x: [0, 30, 0], y: [0, 50, 0] }}
+      transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+      className="absolute -bottom-[10%] left-[20%] w-[600px] h-[600px] rounded-full bg-fuchsia-300/20 blur-[120px]"
+    />
+  </div>
+);
+
+// =====================================================
+//  NEW: FLOATING HEARTS (UNTUK HALAMAN PERTAMA)
+// =====================================================
+const FloatingHearts = () => {
+  const hearts = Array.from({ length: 15 });
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {hearts.map((_, i) => (
+        <motion.div key={i} className="absolute text-pink-400/40"
+          initial={{ x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000), y: '110vh', scale: Math.random() * 1 + 0.5 }}
+          animate={{ y: '-10vh', x: `+=${Math.random() * 100 - 50}px`, rotate: Math.random() * 360 }}
+          transition={{ duration: Math.random() * 10 + 10, repeat: Infinity, ease: 'linear', delay: Math.random() * 10 }}
+        >
+          ❤
+        </motion.div>
+      ))}
+    </div>
+  );
 };
 
 // =====================================================
@@ -294,8 +337,8 @@ export default function App() {
       id: i,
       img: nightMemories[i % nightMemories.length],
       x: Math.random() * 85 + 5,
-      duration: 18 + Math.random() * 8, // Diperlambat sedikit agar terasa lebih sinematik (18-26 detik)
-      delay: Math.random() * 8, // Delay disebar sedikit agar tidak terlalu menumpuk sekaligus (0-8 detik)
+      duration: 18 + Math.random() * 8, 
+      delay: Math.random() * 8, 
       startRot: Math.random() * 40 - 20,
       endRot: Math.random() * 60 - 30,
       scale: Math.random() * 0.5 + 0.7 
@@ -303,6 +346,7 @@ export default function App() {
   }, []);
 
   const noTexts = ["Enggak", "Eh, kepencet ya? 🤨", "Loh, masih 'Enggak'?! 🧐", "Mulai ngajak ribut nih... 😤", "Yakin? Nanti nyesel lho 🫣", "Tega banget... 💔"];
+  // PIN BARU SESUAI PERMINTAAN KLIEN
   const CORRECT_PIN = '100705';
 
   const timelineData = [
@@ -339,49 +383,64 @@ export default function App() {
   const handleDeletePin = () => setPin(pin.slice(0, -1));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff5f7] to-[#ffe4e8] relative overflow-x-hidden font-quicksand text-gray-800">
+    <div className="min-h-screen bg-[#fff5f7] relative overflow-x-hidden font-quicksand text-gray-800 selection:bg-pink-300 selection:text-white">
       <audio ref={audioRef} src="/stuck-with-u.mp3" loop preload="auto"/>
       
+      {/* GLOBAL AURORA BACKGROUND UNTUK STEP -1, 0, 1, 2 */}
+      {step < 3 && <AuroraBackground />}
+
       <AnimatePresence mode="wait">
 
         {/* ===== STEP -1: HALAMAN PERTANYAAN AWAL ===== */}
         {step === -1 && (
           <motion.div key="pre-gate" exit={{ opacity: 0 }} transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#fff5f7] px-4 text-center overflow-hidden"
+            className="fixed inset-0 flex flex-col items-center justify-center z-50 px-4 text-center overflow-hidden"
           >
+            <FloatingHearts />
+            
             <AnimatePresence mode="wait">
               {!isYesClicked ? (
-                <motion.div key="question" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full max-w-md">
-                  <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md" onError={(e) => e.target.style.display = 'none'} />
-                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">Hai, sebelum lanjut... Kamu sayang aku nggak?</h2>
+                <motion.div key="question" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full max-w-md relative z-10">
+                  <motion.img 
+                    animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                    src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} 
+                  />
+                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed drop-shadow-sm">Hai, sebelum lanjut... Kamu sayang aku nggak?</h2>
                   <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 w-full min-h-[140px] relative px-2">
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setIsYesClicked(true)}
+                    <motion.button 
+                      whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.85 }} 
+                      // TAMBAHAN CONFETTI INSTAN SAAT TOMBOL YES DIKLIK
+                      onClick={() => {
+                        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ffc0cb','#ff69b4','#ffffff'] });
+                        setIsYesClicked(true);
+                      }}
                       style={{ fontSize: `${16 + noCount * 3}px`, padding: `${12 + noCount * 2}px ${24 + noCount * 3}px` }}
-                      className="bg-pink-500 text-white font-bold rounded-full shadow-xl transition-all duration-300 z-20 shrink-0 whitespace-nowrap"
+                      className="bg-gradient-to-r from-pink-400 to-pink-500 text-white font-bold rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.4)] transition-all duration-300 z-20 shrink-0 whitespace-nowrap border-2 border-white/20"
                     >
                       Iyaa sayang 💕
                     </motion.button>
                     {noCount < noTexts.length ? (
-                      <motion.button onClick={() => setNoCount(noCount + 1)}
+                      <motion.button onClick={() => setNoCount(noCount + 1)} whileTap={{ scale: 0.8 }}
                         style={{ fontSize: `${Math.max(14 - noCount, 10)}px`, padding: `${Math.max(12 - noCount, 8)}px ${Math.max(24 - noCount * 2, 12)}px`, opacity: 1 - noCount * 0.1 }}
-                        className="bg-white text-gray-600 font-bold rounded-2xl sm:rounded-full shadow-md hover:bg-gray-50 transition-all duration-300 border border-gray-100 whitespace-normal break-words max-w-[110px] sm:max-w-[150px] leading-snug shrink-0"
+                        className="bg-white/80 backdrop-blur-sm text-gray-600 font-bold rounded-2xl sm:rounded-full shadow-md transition-all duration-300 border border-gray-100/50 whitespace-normal break-words max-w-[110px] sm:max-w-[150px] leading-snug shrink-0"
                       >
                         {noTexts[noCount]}
                       </motion.button>
                     ) : (
-                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-pink-400 italic text-sm absolute -bottom-8 w-full">
+                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-pink-400 font-medium italic text-sm absolute -bottom-8 w-full bg-white/50 py-1 rounded-full backdrop-blur-sm">
                         *Tombol No telah disita oleh sistem* 🏃‍♂️💨
                       </motion.div>
                     )}
                   </div>
                 </motion.div>
               ) : (
-                <motion.div key="answered" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center w-full max-w-md">
-                  <img src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md" onError={(e) => e.target.style.display = 'none'} />
-                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4">Hehehe, I love you too! 💕</h2>
-                  <p className="text-gray-600 font-medium md:text-lg mb-8 px-4">Makasih ya udah jujur. Nah, sekarang aku punya sesuatu yang spesial buat kamu...</p>
-                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setStep(0)} className="bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold py-4 px-10 rounded-full shadow-lg text-lg">
-                    Lanjut ✨
+                <motion.div key="answered" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center w-full max-w-md relative z-10">
+                  <motion.img animate={{ rotate: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} />
+                  <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4 drop-shadow-sm">Hehehe, I love you too! 💕</h2>
+                  <p className="text-gray-600 font-medium md:text-lg mb-8 px-4 bg-white/40 p-4 rounded-2xl backdrop-blur-sm border border-white/50 shadow-sm">Makasih ya udah jujur. Nah, sekarang aku punya sesuatu yang spesial buat kamu...</p>
+                  <motion.button whileHover={{ scale: 1.05, boxShadow: "0px 15px 25px rgba(236,72,153,0.5)" }} whileTap={{ scale: 0.95 }} onClick={() => setStep(0)} 
+                    className="bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold py-4 px-12 rounded-full shadow-lg text-lg border border-pink-300/50 relative overflow-hidden group">
+                    <span className="relative z-10">Lanjut ✨</span>
                   </motion.button>
                 </motion.div>
               )}
@@ -392,12 +451,14 @@ export default function App() {
         {/* ===== STEP 0: TAP TO UNLOCK ===== */}
         {step === 0 && (
           <motion.div key="gate" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#fff5f7] cursor-pointer" onClick={handleOpenGate}
+            className="fixed inset-0 flex flex-col items-center justify-center z-50 cursor-pointer" onClick={handleOpenGate}
           >
-            <motion.div animate={{ y: [0,-15,0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-              <motion.img whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} src="/images/kado.png" className="h-48 md:h-64 w-auto object-contain drop-shadow-2xl mb-8" alt="Kado"/>
+            <motion.div animate={{ y: [0,-15,0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="relative">
+              {/* EFEK GLOWING DI BELAKANG KADO */}
+              <div className="absolute inset-0 bg-pink-400/40 blur-[50px] rounded-full scale-150 animate-pulse" />
+              <motion.img whileHover={{ scale: 1.08, rotate: 2 }} whileTap={{ scale: 0.9 }} src="/images/kado.png" className="h-48 md:h-64 w-auto object-contain drop-shadow-2xl mb-8 relative z-10" alt="Kado"/>
             </motion.div>
-            <motion.div animate={{ opacity: [0.3,1,0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="px-6 py-2 bg-pink-100/50 backdrop-blur-sm rounded-full text-pink-500 font-bold tracking-widest uppercase shadow-sm">
+            <motion.div animate={{ opacity: [0.4, 1, 0.4], scale: [0.98, 1.02, 0.98] }} transition={{ repeat: Infinity, duration: 2 }} className="px-8 py-3 bg-white/70 backdrop-blur-md border border-white/60 rounded-full text-pink-500 font-bold tracking-[0.2em] uppercase shadow-[0_8px_30px_rgba(244,63,94,0.2)]">
               Tap to Unlock
             </motion.div>
           </motion.div>
@@ -406,15 +467,16 @@ export default function App() {
         {/* ===== STEP 1: TIMELINE & PIN ===== */}
         {step === 1 && (
           <motion.div key="main" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center pb-32 relative z-10">
-            {/* PARTIKEL LOVE HANYA ADA DI STEP 1 */}
             <FloatingParticles/>
 
             <div className="h-screen w-full flex flex-col items-center justify-center gap-10 md:gap-14 px-4">
-              <motion.h1 initial={{ scale: 0.8, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.5, duration: 1 }}
-                className="font-pacifico text-6xl md:text-8xl text-pink-500 text-center drop-shadow-sm leading-normal pb-4"
+              <motion.h1 initial={{ scale: 0.5, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.6, duration: 1.2 }}
+                className="font-pacifico text-6xl md:text-8xl text-pink-500 text-center drop-shadow-md leading-normal pb-4"
               >Happy Birthday!</motion.h1>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} className="bg-white/40 backdrop-blur-md px-6 py-3 rounded-full shadow-sm border border-white/50">
-                <p className="text-pink-400 text-sm md:text-lg font-bold tracking-widest uppercase">Scroll to See My Favorite Person</p>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 1 }} className="bg-white/60 backdrop-blur-xl px-8 py-4 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-white/60">
+                <p className="text-pink-400 text-sm md:text-lg font-bold tracking-widest uppercase flex items-center gap-2">
+                  <span className="animate-bounce">↓</span> Scroll to See My Favorite Person <span className="animate-bounce">↓</span>
+                </p>
               </motion.div>
             </div>
 
@@ -422,35 +484,53 @@ export default function App() {
               {timelineData.map((item, index) => {
                 const isEven = index % 2 === 0;
                 return (
-                  <motion.div key={item.id} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ type: 'spring', bounce: 0.4, duration: 1 }}
+                  <motion.div key={item.id} initial={{ opacity: 0, x: isEven ? -50 : 50, y: 50 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ type: 'spring', bounce: 0.4, duration: 1.2 }}
                     className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8 md:gap-16`}
                   >
-                    <div className="bg-white p-3 pb-12 md:p-4 md:pb-16 rounded-lg shadow-xl relative w-64 md:w-72 rotate-2 hover:rotate-0 transition-transform duration-300 border border-gray-100">
-                      <img src="/images/washi-tape.png" className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 opacity-90" alt="tape"/>
-                      <div className="w-full aspect-square bg-pink-50 flex items-center justify-center overflow-hidden rounded-sm relative">
-                        <img src={`/images/${item.img}`} alt={item.title} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; e.target.parentElement.innerHTML=`<span class="text-pink-300 font-bold">FOTO ${item.id}</span>`; }}/>
+                    <motion.div whileHover={{ scale: 1.05, rotate: isEven ? -2 : 2 }} className={`bg-white/90 backdrop-blur-sm p-3 pb-12 md:p-4 md:pb-16 rounded-xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative w-64 md:w-72 ${isEven ? 'rotate-2' : '-rotate-2'} transition-all duration-300 border border-white`}>
+                      <img src="/images/washi-tape.png" className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 opacity-90 drop-shadow-sm" alt="tape"/>
+                      <div className="w-full aspect-square bg-pink-50 flex items-center justify-center overflow-hidden rounded-md relative shadow-inner">
+                        <img src={`/images/${item.img}`} alt={item.title} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" onError={(e) => { e.target.style.display='none'; e.target.parentElement.innerHTML=`<span class="text-pink-300 font-bold">FOTO ${item.id}</span>`; }}/>
                       </div>
-                    </div>
-                    <div className={`text-center ${isEven ? 'md:text-left' : 'md:text-right'} max-w-sm`}>
+                    </motion.div>
+                    <div className={`text-center ${isEven ? 'md:text-left' : 'md:text-right'} max-w-sm bg-white/40 p-6 rounded-3xl backdrop-blur-sm border border-white/50 shadow-sm`}>
                       <h3 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4 drop-shadow-sm">{item.title}</h3>
-                      <p className="text-gray-600 md:text-lg leading-relaxed">{item.desc}</p>
+                      <p className="text-gray-700 md:text-lg leading-relaxed font-medium">{item.desc}</p>
                     </div>
                   </motion.div>
                 );
               })}
             </div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="mt-32 flex flex-col items-center bg-white/60 backdrop-blur-xl p-8 md:p-12 rounded-[2rem] shadow-2xl border border-white/60">
-              <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4 text-3xl shadow-inner">🔒</div>
-              <h2 className="font-pacifico text-3xl text-pink-500 mb-2">Secret Vault</h2>
-              <p className="text-gray-500 mb-8 text-center text-sm md:text-base font-medium max-w-xs">Enter 6-digit code to unlock your special message. (DDMMYY)</p>
-              <motion.div animate={pinError ? { x: [-10,10,-10,10,0] } : {}} transition={{ duration: 0.4 }} className="flex gap-3 mb-10">
-                {[...Array(6)].map((_, i) => (<div key={i} className={`w-5 h-5 rounded-full border-2 transition-all duration-300 ${pin.length > i ? 'bg-pink-500 border-pink-500 scale-110 shadow-md shadow-pink-300' : 'bg-pink-50 border-pink-200'}`}/>))}
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 50 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true }} transition={{ type: 'spring', bounce: 0.5 }} className="mt-32 flex flex-col items-center bg-white/80 backdrop-blur-2xl p-8 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(244,63,94,0.15)] border-2 border-white">
+              <motion.div animate={{ rotateY: [0, 180, 360] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mb-6 text-4xl shadow-inner border border-white/60">
+                🔒
               </motion.div>
+              <h2 className="font-pacifico text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-2">Secret Vault</h2>
+              <p className="text-gray-500 mb-10 text-center text-sm md:text-base font-bold max-w-xs bg-pink-50/50 py-2 px-4 rounded-full">Enter 6-digit code (DDMMYY)</p>
+              
+              <motion.div animate={pinError ? { x: [-10,10,-10,10,0] } : {}} transition={{ duration: 0.4 }} className="flex gap-4 mb-10">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 transition-all duration-300 ${pin.length > i ? 'bg-pink-500 border-pink-500 scale-125 shadow-[0_0_15px_rgba(236,72,153,0.6)]' : 'bg-pink-50 border-pink-200'}`}/>
+                ))}
+              </motion.div>
+              
               <div className="grid grid-cols-3 gap-4 md:gap-6">
-                {[1,2,3,4,5,6,7,8,9].map((num) => (<button key={num} onClick={() => handlePinInput(num.toString())} className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/80 text-pink-500 text-2xl font-bold shadow-sm hover:shadow-md hover:bg-pink-100 hover:scale-105 active:scale-95 transition-all border border-pink-50">{num}</button>))}
-                <div/><button onClick={() => handlePinInput('0')} className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/80 text-pink-500 text-2xl font-bold shadow-sm hover:shadow-md hover:bg-pink-100 hover:scale-105 active:scale-95 transition-all border border-pink-50">0</button>
-                <button onClick={handleDeletePin} className="w-16 h-16 md:w-20 md:h-20 rounded-full text-pink-300 text-3xl hover:text-pink-500 hover:scale-105 active:scale-95 transition-all flex items-center justify-center">&larr;</button>
+                {[1,2,3,4,5,6,7,8,9].map((num) => (
+                  <motion.button key={num} whileHover={{ scale: 1.1, backgroundColor: "#fce7f3" }} whileTap={{ scale: 0.9 }} onClick={() => handlePinInput(num.toString())} 
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white text-pink-500 text-2xl font-bold shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-pink-50 flex items-center justify-center">
+                    {num}
+                  </motion.button>
+                ))}
+                <div/>
+                <motion.button whileHover={{ scale: 1.1, backgroundColor: "#fce7f3" }} whileTap={{ scale: 0.9 }} onClick={() => handlePinInput('0')} 
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white text-pink-500 text-2xl font-bold shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-pink-50 flex items-center justify-center">
+                  0
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={handleDeletePin} 
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full text-pink-300 text-3xl bg-white/50 hover:bg-white hover:text-pink-500 shadow-sm border border-transparent flex items-center justify-center">
+                  &larr;
+                </motion.button>
               </div>
             </motion.div>
           </motion.div>
@@ -458,30 +538,31 @@ export default function App() {
 
         {/* ===== STEP 2: SURAT SURPRISE ===== */}
         {step === 2 && (
-          <motion.div key="letter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(20px)' }} transition={{ duration: 1.5 }}
-            className="w-full h-screen fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#fff5f7] to-[#ffe4e8] overflow-hidden z-40"
+          <motion.div key="letter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }}
+            className="w-full h-screen fixed inset-0 flex items-center justify-center overflow-hidden z-40"
           >
+            {/* Background Marquee */}
             <div className="absolute top-2 md:top-6 left-0 w-[120%] -translate-x-[10%] -rotate-6 pointer-events-none opacity-60 md:opacity-75">
               <motion.div animate={{ x: ['0%','-50%'] }} transition={{ ease: 'linear', duration: 30, repeat: Infinity }} className="flex gap-4 md:gap-8 w-max">
-                {infinitePhotos.map((img, idx) => (<div key={`top-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-xl rounded-sm shrink-0"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
+                {infinitePhotos.map((img, idx) => (<div key={`top-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-sm shrink-0 border border-white/50"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
               </motion.div>
             </div>
             <div className="absolute bottom-2 md:bottom-6 left-0 w-[120%] -translate-x-[10%] -rotate-6 pointer-events-none opacity-60 md:opacity-75">
               <motion.div animate={{ x: ['-50%','0%'] }} transition={{ ease: 'linear', duration: 25, repeat: Infinity }} className="flex gap-4 md:gap-8 w-max">
-                {infinitePhotos.map((img, idx) => (<div key={`bot-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-xl rounded-sm shrink-0"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
+                {infinitePhotos.map((img, idx) => (<div key={`bot-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-sm shrink-0 border border-white/50"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
               </motion.div>
             </div>
             <motion.img animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} src="/images/sparkles.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-20 z-10" onError={(e) => e.target.style.display='none'}/>
             
-            <motion.div initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: [0,-8,0] }} transition={{ type: 'spring', bounce: 0.4, duration: 1, delay: 0.5, y: { repeat: Infinity, duration: 4, ease: 'easeInOut' } }}
-              className="w-[88%] max-w-2xl bg-white/75 backdrop-blur-xl rounded-[2rem] p-5 md:p-12 shadow-[0_25px_50px_-12px_rgba(244,63,94,0.15)] border border-white text-center relative z-20 flex flex-col items-center"
+            <motion.div initial={{ opacity: 0, scale: 0.8, y: 30 }} animate={{ opacity: 1, scale: 1, y: [0,-10,0] }} transition={{ type: 'spring', bounce: 0.4, duration: 1.5, delay: 0.5, y: { repeat: Infinity, duration: 5, ease: 'easeInOut' } }}
+              className="w-[88%] max-w-2xl bg-white/85 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-14 shadow-[0_30px_60px_-15px_rgba(244,63,94,0.3)] border-2 border-white text-center relative z-20 flex flex-col items-center"
             >
-              <h2 className="font-pacifico text-3xl md:text-5xl text-pink-500 mb-4 md:mb-6 drop-shadow-sm">My Letter to You</h2>
-              <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-2 mb-6 md:mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+              <h2 className="font-pacifico text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-6 drop-shadow-sm">My Letter to You</h2>
+              <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-3 mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full shadow-inner bg-white/40 p-4 rounded-2xl border border-white">
                 <TypewriterText text={letterText} delay={1000} />
               </div>
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setStep(3)}
-                className="w-full md:w-auto bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3.5 px-10 rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.3)] transition-all duration-300 cursor-pointer text-sm md:text-base">
+              <motion.button whileHover={{ scale: 1.05, boxShadow: "0px 10px 25px rgba(236,72,153,0.4)" }} whileTap={{ scale: 0.95 }} onClick={() => setStep(3)}
+                className="w-full md:w-auto bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-4 px-12 rounded-full transition-all duration-300 cursor-pointer text-sm md:text-lg border border-pink-300/50">
                 One Last Magic 🌸
               </motion.button>
             </motion.div>
@@ -490,7 +571,7 @@ export default function App() {
 
         {/* ===== STEP 3: BUNGA ===== */}
         {step === 3 && (
-          <motion.div key="flower" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(15px)' }} transition={{ duration: 2 }}
+          <motion.div key="flower" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden"
             style={{ background: 'radial-gradient(ellipse at 50% 30%, #2a0d1b 0%, #111827 55%, #050810 100%)' }}
           >
@@ -499,17 +580,18 @@ export default function App() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 5, duration: 2.5, ease: 'easeOut' }}
               className="relative z-20 text-center flex flex-col items-center mt-auto mb-10 md:mb-12 px-4 pointer-events-auto"
             >
-              <motion.h1 animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="font-pacifico text-4xl sm:text-5xl md:text-7xl text-rose-300 mb-2 drop-shadow-[0_0_15px_rgba(251,113,133,0.8)]"
+              <motion.h1 animate={{ opacity: [0.7, 1, 0.7], textShadow: ["0px 0px 10px rgba(251,113,133,0.5)", "0px 0px 20px rgba(251,113,133,1)", "0px 0px 10px rgba(251,113,133,0.5)"] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                className="font-pacifico text-4xl sm:text-5xl md:text-7xl text-rose-200 mb-2"
               >Happy Birthday.</motion.h1>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 6.5, duration: 2 }} className="text-gray-400 font-medium tracking-[0.2em] md:tracking-[0.35em] uppercase text-xs md:text-sm mt-4">
                 You are my favorite kind of magic.
               </motion.p>
               
               <motion.button 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 8.5, duration: 1.5 }}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 8.5, duration: 1.5 }}
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(251, 113, 133, 0.15)" }} whileTap={{ scale: 0.95 }}
                 onClick={() => setStep(4)}
-                className="mt-10 bg-transparent border border-rose-400/50 text-rose-300 px-8 py-2.5 rounded-full font-medium hover:bg-rose-400/20 transition-colors text-xs tracking-widest uppercase shadow-[0_0_15px_rgba(251,113,133,0.2)] cursor-pointer"
+                className="mt-10 bg-transparent border border-rose-400/50 text-rose-300 px-10 py-3 rounded-full font-bold transition-all duration-300 text-xs tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(251,113,133,0.1)] cursor-pointer backdrop-blur-sm"
               >
                 One More Thing...
               </motion.button>
@@ -522,20 +604,20 @@ export default function App() {
           <motion.div key="wishes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden bg-[#050810]"
           >
-            {/* BACKGROUND BERTABUR BINTANG (TAILWIND GRADIENT) */}
+            {/* BACKGROUND BERTABUR BINTANG */}
             <div className="fixed inset-0 opacity-40 z-0 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 200px 50px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 240px 150px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 280px 90px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 320px 140px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 360px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 400px 110px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 440px 60px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 480px 180px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 520px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 560px 150px, #ffffff, rgba(0,0,0,0))', backgroundSize: '200px 200px' }} />
 
             <div className="absolute inset-0 z-0 pointer-events-none">
               {floatingPhotosConfig.map((config) => (
                 <motion.div key={`fl-img-${config.id}`} 
-                  className="absolute rounded-xl p-1.5 bg-white/10 backdrop-blur-md shadow-2xl flex items-center justify-center w-28 h-28 md:w-40 md:h-40"
+                  className="absolute rounded-xl p-2 bg-white/10 backdrop-blur-md shadow-[0_15px_35px_rgba(0,0,0,0.5)] flex items-center justify-center w-28 h-28 md:w-40 md:h-40 border border-white/20"
                   initial={{ y: '120vh', x: `${config.x}vw`, rotate: config.startRot, opacity: 0, scale: config.scale }}
-                  animate={{ y: '-30vh', opacity: [0, 0.7, 0.7, 0], rotate: config.endRot }}
+                  animate={{ y: '-30vh', opacity: [0, 0.8, 0.8, 0], rotate: config.endRot }}
                   transition={{ duration: config.duration, repeat: Infinity, delay: config.delay, ease: 'linear' }}
                 >
-                  <div className="w-full h-full bg-white/5 rounded-lg overflow-hidden flex items-center justify-center relative">
-                    <img src={`/images/${config.img}`} className="w-full h-full object-cover opacity-80" alt="Memory" 
+                  <div className="w-full h-full bg-black/20 rounded-lg overflow-hidden flex items-center justify-center relative shadow-inner">
+                    <img src={`/images/${config.img}`} className="w-full h-full object-cover opacity-90" alt="Memory" 
                       onError={(e) => { e.target.style.display='none'; e.target.parentElement.innerHTML='<span class="text-white/30 font-medium text-xs text-center px-2">FOTO BELUM ADA</span>'; }}
                     />
                   </div>
@@ -544,11 +626,11 @@ export default function App() {
             </div>
 
             <div className="absolute top-16 md:top-20 z-10 text-center px-4 w-full pointer-events-none">
-              <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 1.5 }} className="font-pacifico text-3xl md:text-4xl text-rose-300 mb-2 drop-shadow-[0_0_10px_rgba(251,113,133,0.5)]">
+              <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 1.5 }} className="font-pacifico text-3xl md:text-5xl text-rose-300 mb-3 drop-shadow-[0_0_15px_rgba(251,113,133,0.6)]">
                 Night of Wishes
               </motion.h2>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2, duration: 1.5 }} className="text-gray-300 text-sm md:text-base font-medium tracking-wide">
-                Tap the glowing stars to catch my wishes.
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2, duration: 1.5 }} className="text-rose-100/80 text-sm md:text-lg font-medium tracking-widest uppercase">
+                Tap the glowing stars
               </motion.p>
             </div>
 
@@ -559,23 +641,23 @@ export default function App() {
                     e.preventDefault();
                     e.stopPropagation();
                     setSelectedWish(wish);
-                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#ffc0cb','#ffd700','#ffffff'] });
+                    confetti({ particleCount: 70, spread: 80, origin: { y: 0.8 }, colors: ['#ffc0cb','#ffd700','#ffffff', '#ff69b4'] });
                   }}
                   initial={{ scale: 0, opacity: 0, x: starPaths[i].x[0], y: starPaths[i].y[0] }}
                   animate={{ 
                     x: starPaths[i].x,
                     y: starPaths[i].y, 
-                    scale: [1, 1.2, 1], 
-                    opacity: [0.7, 1, 0.7]
+                    scale: [1, 1.3, 1], 
+                    opacity: [0.6, 1, 0.6]
                   }}
                   transition={{ 
                     x: { duration: 40 + i * 5, repeat: Infinity, ease: 'linear' },
                     y: { duration: 45 + i * 5, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
-                    opacity: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+                    scale: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+                    opacity: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
                   }}
                   style={{ position: 'absolute' }}
-                  className="w-16 h-16 flex items-center justify-center rounded-full bg-rose-400/20 text-3xl drop-shadow-[0_0_20px_rgba(251,113,133,1)] border border-rose-300/30 active:scale-90 pointer-events-auto cursor-pointer relative before:absolute before:inset-[-25px] before:content-[''] before:rounded-full"
+                  className="w-16 h-16 flex items-center justify-center rounded-full bg-rose-400/20 text-3xl drop-shadow-[0_0_25px_rgba(251,113,133,1)] border border-rose-300/40 active:scale-75 pointer-events-auto cursor-pointer relative before:absolute before:inset-[-30px] before:content-[''] before:rounded-full transition-transform"
                 >
                   ✨
                 </motion.button>
@@ -585,18 +667,20 @@ export default function App() {
             <AnimatePresence>
               {selectedWish && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm pointer-events-auto"
+                  className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md pointer-events-auto"
                   onClick={() => setSelectedWish(null)}
                 >
-                  <motion.div initial={{ scale: 0.8, y: 50 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 50, opacity: 0 }}
+                  <motion.div initial={{ scale: 0.5, y: 100, rotateX: 45 }} animate={{ scale: 1, y: 0, rotateX: 0 }} exit={{ scale: 0.8, y: 50, opacity: 0 }}
+                    transition={{ type: 'spring', bounce: 0.5 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-white/95 p-6 md:p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-pink-100 relative"
+                    className="bg-white/95 p-8 md:p-10 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] max-w-sm w-full text-center border-4 border-pink-100 relative bg-[url('/images/washi-tape.png')] bg-no-repeat bg-[length:60px] bg-[top_10px_center]"
                   >
-                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-5xl drop-shadow-md">💌</div>
-                    <p className="text-gray-700 font-medium leading-relaxed mb-6 mt-4 md:text-lg">{selectedWish}</p>
-                    <button onClick={() => setSelectedWish(null)} className="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-2.5 px-8 rounded-full shadow-[0_4px_15px_rgba(236,72,153,0.3)] transition-all cursor-pointer">
+                    <div className="text-5xl drop-shadow-lg mb-6 mt-4">💌</div>
+                    <p className="text-gray-700 font-bold leading-relaxed mb-8 md:text-lg">{selectedWish}</p>
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setSelectedWish(null)} 
+                      className="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3 px-10 rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.3)] transition-all cursor-pointer w-full text-lg border border-pink-300/50">
                       Aamiin ✨
-                    </button>
+                    </motion.button>
                   </motion.div>
                 </motion.div>
               )}
