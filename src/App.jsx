@@ -265,7 +265,6 @@ export default function App() {
   const [noCount, setNoCount] = useState(0);
   const [isYesClicked, setIsYesClicked] = useState(false);
 
-  // === DATA UNTUK STEP 4 (WISHES) ===
   const [selectedWish, setSelectedWish] = useState(null);
   const wishesData = [
     "Semoga di umur yang baru ini, kamu semakin bahagia dan selalu dikelilingi orang yang tulus menyayangimu. ✨",
@@ -275,16 +274,11 @@ export default function App() {
     "Dan semoga... kita bisa terus merayakan momen-momen indah seperti ini bersama-sama di tahun-tahun berikutnya. 🥰"
   ];
 
-  // =========================================================================
-  // GANTI NAMA-NAMA FOTO DI BAWAH INI NANTI JIKA KLIEN SUDAH MENGIRIM FOTONYA
-  // (Pastikan file fotonya diletakkan di dalam folder public/images)
-  // =========================================================================
   const nightMemories = [
     'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 
     'foto1.jpg', 'foto2.jpg', 'foto3.jpg'
   ];
 
-  // --- MEMOIZE BINTANG ---
   const starPaths = useMemo(() => {
     return wishesData.map(() => {
       const pathX = Array.from({length: 4}, () => Math.floor(Math.random() * 80 + 5) + 'vw');
@@ -295,14 +289,13 @@ export default function App() {
     });
   }, []);
 
-  // --- MEMOIZE FOTO MELAYANG ---
   const floatingPhotosConfig = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
       id: i,
       img: nightMemories[i % nightMemories.length],
       x: Math.random() * 85 + 5,
-      duration: 12 + Math.random() * 8,
-      delay: Math.random() * 5,
+      duration: 18 + Math.random() * 8, // Diperlambat sedikit agar terasa lebih sinematik (18-26 detik)
+      delay: Math.random() * 8, // Delay disebar sedikit agar tidak terlalu menumpuk sekaligus (0-8 detik)
       startRot: Math.random() * 40 - 20,
       endRot: Math.random() * 60 - 30,
       scale: Math.random() * 0.5 + 0.7 
@@ -398,7 +391,7 @@ export default function App() {
 
         {/* ===== STEP 0: TAP TO UNLOCK ===== */}
         {step === 0 && (
-          <motion.div key="gate" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }} transition={{ duration: 0.8, ease: "easeInOut" }}
+          <motion.div key="gate" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#fff5f7] cursor-pointer" onClick={handleOpenGate}
           >
             <motion.div animate={{ y: [0,-15,0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
@@ -413,7 +406,9 @@ export default function App() {
         {/* ===== STEP 1: TIMELINE & PIN ===== */}
         {step === 1 && (
           <motion.div key="main" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center pb-32 relative z-10">
+            {/* PARTIKEL LOVE HANYA ADA DI STEP 1 */}
             <FloatingParticles/>
+
             <div className="h-screen w-full flex flex-col items-center justify-center gap-10 md:gap-14 px-4">
               <motion.h1 initial={{ scale: 0.8, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.5, duration: 1 }}
                 className="font-pacifico text-6xl md:text-8xl text-pink-500 text-center drop-shadow-sm leading-normal pb-4"
@@ -527,6 +522,10 @@ export default function App() {
           <motion.div key="wishes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden bg-[#050810]"
           >
+            {/* BACKGROUND BERTABUR BINTANG (TAILWIND GRADIENT) */}
+            <div className="fixed inset-0 opacity-40 z-0 pointer-events-none" 
+                 style={{ backgroundImage: 'radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 200px 50px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 240px 150px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 280px 90px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 320px 140px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 360px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 400px 110px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 440px 60px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 480px 180px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 520px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 560px 150px, #ffffff, rgba(0,0,0,0))', backgroundSize: '200px 200px' }} />
+
             <div className="absolute inset-0 z-0 pointer-events-none">
               {floatingPhotosConfig.map((config) => (
                 <motion.div key={`fl-img-${config.id}`} 
@@ -553,13 +552,11 @@ export default function App() {
               </motion.p>
             </div>
 
-            {/* Glowing Stars Beterbangan - RANDOM DAN SUPER CLICKABLE */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               {wishesData.map((wish, i) => (
                 <motion.button key={`wish-btn-${i}`}
-                  // Menggunakan onPointerDown agar langsung bereaksi saat ditekan (tidak perlu tunggu jari diangkat)
                   onPointerDown={(e) => {
-                    e.preventDefault(); // Mencegah browser menganggap sentuhan ini sebagai scroll/drag
+                    e.preventDefault();
                     e.stopPropagation();
                     setSelectedWish(wish);
                     confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#ffc0cb','#ffd700','#ffffff'] });
@@ -572,13 +569,12 @@ export default function App() {
                     opacity: [0.7, 1, 0.7]
                   }}
                   transition={{ 
-                    x: { duration: 40 + i * 5, repeat: Infinity, ease: 'linear' }, // Diperlambat sedikit agar mudah ditangkap
+                    x: { duration: 40 + i * 5, repeat: Infinity, ease: 'linear' },
                     y: { duration: 45 + i * 5, repeat: Infinity, ease: 'linear' },
                     scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
                     opacity: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
                   }}
                   style={{ position: 'absolute' }}
-                  // Ukuran w-14/16 diperbesar sedikit, dan DITAMBAH AREA KLIK GAIB via before:inset-[-25px]
                   className="w-16 h-16 flex items-center justify-center rounded-full bg-rose-400/20 text-3xl drop-shadow-[0_0_20px_rgba(251,113,133,1)] border border-rose-300/30 active:scale-90 pointer-events-auto cursor-pointer relative before:absolute before:inset-[-25px] before:content-[''] before:rounded-full"
                 >
                   ✨
@@ -586,7 +582,6 @@ export default function App() {
               ))}
             </div>
 
-            {/* Modal Surat Harapan Pop-up */}
             <AnimatePresence>
               {selectedWish && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
