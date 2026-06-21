@@ -486,7 +486,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fff5f7] to-[#ffe4e8] relative overflow-x-hidden font-quicksand text-gray-800">
       <audio ref={audioRef} src="/stuck-with-u.mp3" loop preload="auto"/>
-      {step < 2 && <FloatingParticles/>}
+      
+      {/* Floating Particles dipindahkan dari sini agar tidak bocor saat transisi */}
 
       <AnimatePresence mode="wait">
 
@@ -494,8 +495,9 @@ export default function App() {
         {step === -1 && (
           <motion.div
             key="pre-gate"
-            exit={{ opacity: 0, y: -50, filter: 'blur(10px)' }}
-            transition={{ duration: 0.8 }}
+            // Transisi dibuat Smooth Fade out murni tanpa efek blur
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#fff5f7] px-4 text-center overflow-hidden"
           >
             <AnimatePresence mode="wait">
@@ -507,23 +509,23 @@ export default function App() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/cat-love.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
+                  <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed">
-                    Hai, sebelum lanjut... Kamu sayang aku nggak? 🥺
+                    Hai, sebelum lanjut... Kamu sayang aku nggak?
                   </h2>
 
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-4 w-full min-h-[120px] relative">
+                  <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 w-full min-h-[140px] relative px-2">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setIsYesClicked(true)}
                       style={{ 
-                        fontSize: `${16 + noCount * 6}px`, 
-                        padding: `${12 + noCount * 6}px ${24 + noCount * 8}px` 
+                        fontSize: `${16 + noCount * 3}px`, 
+                        padding: `${12 + noCount * 2}px ${24 + noCount * 3}px` 
                       }}
-                      className="bg-pink-500 text-white font-bold rounded-full shadow-lg transition-all duration-300 z-20"
+                      className="bg-pink-500 text-white font-bold rounded-full shadow-xl transition-all duration-300 z-20 shrink-0 whitespace-nowrap"
                     >
                       Iyaa sayang 💕
                     </motion.button>
@@ -531,15 +533,19 @@ export default function App() {
                     {noCount < noTexts.length ? (
                       <motion.button
                         onClick={() => setNoCount(noCount + 1)}
-                        style={{ transform: `scale(${1 - noCount * 0.15})` }}
-                        className="bg-white text-gray-600 font-bold py-3 px-8 rounded-full shadow-md hover:bg-gray-50 transition-all duration-300 border border-gray-100 shrink-0"
+                        style={{ 
+                          fontSize: `${Math.max(14 - noCount, 10)}px`,
+                          padding: `${Math.max(12 - noCount, 8)}px ${Math.max(24 - noCount * 2, 12)}px`,
+                          opacity: 1 - noCount * 0.1
+                        }}
+                        className="bg-white text-gray-600 font-bold rounded-2xl sm:rounded-full shadow-md hover:bg-gray-50 transition-all duration-300 border border-gray-100 whitespace-normal break-words max-w-[110px] sm:max-w-[150px] leading-snug shrink-0"
                       >
                         {noTexts[noCount]}
                       </motion.button>
                     ) : (
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                        className="text-pink-400 italic text-sm absolute -bottom-10 w-full"
+                        className="text-pink-400 italic text-sm absolute -bottom-8 w-full"
                       >
                         *Tombol No telah disita oleh sistem* 🏃‍♂️💨
                       </motion.div>
@@ -553,7 +559,7 @@ export default function App() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center w-full max-w-md"
                 >
-                  <img src="/images/cat-love-ketiga.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
+                  <img src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-md"
                     onError={(e) => e.target.style.display = 'none'} />
                   
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4">
@@ -580,8 +586,11 @@ export default function App() {
         {/* ===== STEP 0 ===== */}
         {step === 0 && (
           <motion.div key="gate"
-            exit={{ opacity: 0, scale: 1.2, filter: 'blur(15px)' }}
-            transition={{ duration: 0.6 }}
+            // Ditambahkan initial dan animate agar masuknya sangat mulus menyambut halaman sebelumnya
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#fff5f7] cursor-pointer"
             onClick={handleOpenGate}
           >
@@ -603,6 +612,9 @@ export default function App() {
             transition={{ duration: 0.8 }}
             className="w-full flex flex-col items-center pb-32 relative z-10"
           >
+            {/* Partikel Love diletakkan SECARA EKSKLUSIF di sini agar halamannya bersih */}
+            <FloatingParticles/>
+
             <div className="h-screen w-full flex flex-col items-center justify-center gap-10 md:gap-14 px-4">
               <motion.h1
                 initial={{ scale: 0.8, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -672,7 +684,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* ===== STEP 2 (DENGAN TYPEWRITER EFEK YANG LANCAR JAYA) ===== */}
+        {/* ===== STEP 2 ===== */}
         {step === 2 && (
           <motion.div key="letter"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(20px)' }}
@@ -711,7 +723,6 @@ export default function App() {
               <h2 className="font-pacifico text-3xl md:text-5xl text-pink-500 mb-4 md:mb-6 drop-shadow-sm">My Letter to You</h2>
               
               <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-2 mb-6 md:mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full">
-                {/* Di sinilah Typewriter Murni dipanggil (Mulai ngetik di detik ke-1 setelah kartu muncul) */}
                 <TypewriterText text={letterText} delay={1000} />
               </div>
 
@@ -724,7 +735,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* ===== STEP 3 (DIOPTIMASI UNTUK MOBILE) ===== */}
+        {/* ===== STEP 3 ===== */}
         {step === 3 && (
           <motion.div key="final"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2 }}
