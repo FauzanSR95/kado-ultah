@@ -2,6 +2,46 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
+// =========================================================================
+//  RUANG KONTROL KLIEN (SILAKAN EDIT NAMA, PIN, & FOTO DI SINI SAJA)
+// =========================================================================
+const NAMA_PASANGAN = "Figia Venda Rahmadita";
+const NAMA_PENGIRIM = "Billi Arya Prasantanu";
+const TANGGAL_LAHIR = "10 Juli 2005"; 
+const UMUR = 21; // 2026 - 2005 = 21 Tahun
+
+// PIN UNTUK MEMBUKA WEB (10 Juni 2005)
+const CORRECT_PIN = '100705'; 
+
+// SURAT CINTA UTAMA
+const SURAT_CINTA = `Hai, ${NAMA_PASANGAN} sayang.\n\nSelamat ulang tahun yang ke-${UMUR}! Website ini sengaja kubuat khusus untukmu, karena kado biasa rasanya tidak cukup untuk mengekspresikan betapa berartinya dirimu bagiku.\n\nTerima kasih sudah terlahir ke dunia ini pada ${TANGGAL_LAHIR} dan menjadi versi terbaik dari dirimu. Semoga di umur yang baru ini, semua harapan dan impianmu perlahan menjadi nyata. Aku akan selalu ada di sini untuk mendukungmu, dalam setiap langkahmu.\n\nI love you, now and always. ✨\n\nDari aku yang selalu menyayangimu,\n${NAMA_PENGIRIM}`;
+
+// 3 FOTO UNTUK HALAMAN SCROLL (TIMELINE)
+const TIMELINE_DATA = [
+  { id: 1, title: 'That Captivating Smile', desc: 'Melihat senyummu selalu menjadi bagian terbaik dalam hariku.', img: 'kue.png' },
+  { id: 2, title: 'Effortlessly Beautiful', desc: 'Tidak peduli dari sudut mana, kamu selalu berhasil membuatku kagum.', img: 'kue.png' },
+  { id: 3, title: 'My Favorite View', desc: 'Dan di antara semua hal indah di dunia, memandangi wajahmu adalah favoritku.', img: 'kue.png' },
+];
+
+// FOTO-FOTO UNTUK MELAYANG DI LANGIT MALAM (Minimal 3-6 foto berbeda)
+const MEMORY_PHOTOS = [
+  'kue.png', 'kue.png', 'kue.png', 
+  'kue.png', 'kue.png', 'kue.png'
+];
+
+// ISI KARTU HARAPAN PADA BINTANG YANG DIKLIK
+const WISHES_DATA = [
+  `Semoga di umur yang ke-${UMUR} ini, kamu semakin bahagia dan selalu dikelilingi orang yang tulus menyayangimu. ✨`,
+  "Semoga semua cita-cita dan harapan yang kamu pendam bisa segera terwujud satu per satu tahun ini. 🌸",
+  "Semoga selalu diberikan kesehatan, kurang-kurangin overthinking, dan jangan lupa bahagia hari ini! 💕",
+  "Semoga hari-harimu ke depan penuh dengan kejutan manis yang tak terduga. 🎁",
+  `Dan semoga... kita bisa terus merayakan momen-momen indah seperti ini bersama-sama di tahun-tahun berikutnya. 🥰\n- ${NAMA_PENGIRIM}`
+];
+// =========================================================================
+//  AKHIR RUANG KONTROL
+// =========================================================================
+
+
 // =====================================================
 //  EASING & ANIMATION VARIANTS
 // =====================================================
@@ -43,30 +83,18 @@ const TypewriterText = ({ text, delay }) => {
 };
 
 // =====================================================
-//  NEW: AURORA ANIMATED BACKGROUND (SUPER PREMIUM & RINGAN)
+//  AURORA ANIMATED BACKGROUND 
 // =====================================================
 const AuroraBackground = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-    <motion.div
-      animate={{ scale: [1, 1.2, 1], x: [0, 60, 0], y: [0, 40, 0] }}
-      transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute -top-[10%] -left-[10%] w-[500px] h-[500px] rounded-full bg-rose-300/30 blur-[100px]"
-    />
-    <motion.div
-      animate={{ scale: [1, 1.3, 1], x: [0, -50, 0], y: [0, -60, 0] }}
-      transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-      className="absolute top-[40%] -right-[10%] w-[400px] h-[400px] rounded-full bg-pink-400/20 blur-[100px]"
-    />
-    <motion.div
-      animate={{ scale: [1, 1.5, 1], x: [0, 30, 0], y: [0, 50, 0] }}
-      transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-      className="absolute -bottom-[10%] left-[20%] w-[600px] h-[600px] rounded-full bg-fuchsia-300/20 blur-[120px]"
-    />
+    <motion.div animate={{ scale: [1, 1.2, 1], x: [0, 60, 0], y: [0, 40, 0] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[10%] -left-[10%] w-[500px] h-[500px] rounded-full bg-rose-300/30 blur-[100px]" />
+    <motion.div animate={{ scale: [1, 1.3, 1], x: [0, -50, 0], y: [0, -60, 0] }} transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }} className="absolute top-[40%] -right-[10%] w-[400px] h-[400px] rounded-full bg-pink-400/20 blur-[100px]" />
+    <motion.div animate={{ scale: [1, 1.5, 1], x: [0, 30, 0], y: [0, 50, 0] }} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }} className="absolute -bottom-[10%] left-[20%] w-[600px] h-[600px] rounded-full bg-fuchsia-300/20 blur-[120px]" />
   </div>
 );
 
 // =====================================================
-//  NEW: FLOATING HEARTS (UNTUK HALAMAN PERTAMA)
+//  FLOATING HEARTS 
 // =====================================================
 const FloatingHearts = () => {
   const hearts = Array.from({ length: 15 });
@@ -86,7 +114,7 @@ const FloatingHearts = () => {
 };
 
 // =====================================================
-//  CINEMATIC ROSE
+//  CINEMATIC ROSE 
 // =====================================================
 const CinematicRose = () => {
   const svgRef = useRef(null);
@@ -212,12 +240,18 @@ const CinematicRose = () => {
   const stars = [[45,30,1.2,0],[82,18,0.8,1],[130,42,1.5,2],[180,15,1,0],[240,28,0.8,1],[310,12,1.3,2],[370,38,1,0],[420,20,1.5,1],[468,45,0.9,2],[500,25,1.2,0],[60,80,0.7,1],[150,65,1,2],[110,160,1.5,0],[385,130,1.8,1],[70,240,1.2,2],[455,200,1.3,0],[140,110,2,1],[400,95,1.6,2],[30,150,1,0],[490,160,0.9,1],[200,50,1.1,2],[330,70,0.8,0],[22,320,0.7,1],[500,310,1,2],[260,40,1.3,0]];
   const starColors = ['#ff99cc', '#ffb3d9', '#d8e8ff'];
 
+  // KOORDINAT DAUN SUDAH DIGESER PRESISI MENGIKUTI KELENGKUNGAN BATANG
   const leaves = [
-    { d:"M258,422 C238,410 215,404 200,414 C188,422 192,442 210,448 C228,454 252,440 258,424Z", g:"lG1" }, { d:"M262,387 C282,374 308,368 322,378 C334,386 330,406 312,412 C294,418 265,402 262,389Z", g:"lG2" },
-    { d:"M259,333 C238,320 215,314 202,324 C192,332 196,350 212,354 C228,358 254,344 259,335Z", g:"lG1" }, { d:"M261,302 C280,290 305,284 318,294 C328,302 322,320 306,324 C290,328 264,310 261,304Z", g:"lG2" },
-    { d:"M162,422 C140,412 116,407 106,418 C98,427 104,444 120,448 C138,452 160,436 162,424Z", g:"lG1" }, { d:"M165,382 C182,370 206,364 217,374 C226,382 220,400 204,404 C188,408 167,390 165,384Z", g:"lG2" },
-    { d:"M350,422 C372,412 396,407 406,418 C414,427 408,444 392,448 C374,452 352,436 350,424Z", g:"lG2" }, { d:"M347,382 C330,370 306,364 296,374 C288,382 294,400 310,404 C326,408 345,390 347,384Z", g:"lG1" },
-    { d:"M227,507 C207,494 187,488 177,498 C168,506 174,522 190,526 C208,530 224,514 227,508Z", g:"lG1" }, { d:"M297,507 C317,494 340,488 350,498 C358,506 352,522 336,526 C318,530 300,514 297,508Z", g:"lG2" },
+    { d:"M256,422 C236,410 213,404 198,414 C186,422 190,442 208,448 C226,454 250,440 256,424Z", g:"lG1" }, 
+    { d:"M257,387 C277,374 303,368 317,378 C329,386 325,406 307,412 C289,418 260,402 257,389Z", g:"lG2" },
+    { d:"M258,333 C237,320 214,314 201,324 C191,332 195,350 211,354 C227,358 253,344 258,335Z", g:"lG1" }, 
+    { d:"M259,302 C278,290 303,284 316,294 C326,302 320,320 304,324 C288,328 262,310 259,304Z", g:"lG2" },
+    { d:"M150,422 C128,412 104,407 94,418 C86,427 92,444 108,448 C126,452 148,436 150,424Z", g:"lG1" }, 
+    { d:"M147,382 C164,370 188,364 199,374 C208,382 202,400 186,404 C170,408 149,390 147,384Z", g:"lG2" },
+    { d:"M358,422 C380,412 404,407 414,418 C422,427 416,444 400,448 C382,452 360,436 358,424Z", g:"lG2" }, 
+    { d:"M358,382 C341,370 317,364 307,374 C299,382 305,400 321,404 C337,408 356,390 358,384Z", g:"lG1" },
+    { d:"M227,507 C207,494 187,488 177,498 C168,506 174,522 190,526 C208,530 224,514 227,508Z", g:"lG1" }, 
+    { d:"M297,507 C317,494 340,488 350,498 C358,506 352,522 336,526 C318,530 300,514 297,508Z", g:"lG2" },
   ];
 
   const grassPaths = [
@@ -244,11 +278,15 @@ const CinematicRose = () => {
 
       {stars.map(([x, y, r, c], i) => (<circle key={`s-${i}`} className="star-dot" cx={x} cy={y} r={r} fill={starColors[c]} opacity="0"/>))}
       <ellipse cx="260" cy="566" rx="215" ry="21" fill="url(#groundG)"/>
+      
+      {/* DAUN DITANGKAP DI SINI, DI BELAKANG BATANG BUNGA AGAR RAPI */}
+      <g id="leaves-g" opacity="0">{leaves.map((leaf, i) => (<path key={i} d={leaf.d} fill={`url(#${leaf.g})`}/>))}</g>
+      
       <g id="grass-g" opacity="0">{grassPaths.map(([d, v], i) => (<path key={i} d={d} fill={v === 0 ? 'url(#lG1)' : 'url(#lG2)'} opacity="0.88"/>))}</g>
       <path id="stem-l" d="M168,555 C166,515 158,478 152,445 C147,412 145,380 155,350 C159,335 162,315 160,295" fill="none" stroke="url(#stG2)" strokeWidth="5" strokeLinecap="round"/>
       <path id="stem-m" d="M260,560 C258,518 255,470 255,428 C255,388 257,348 259,308 C260,272 260,246 260,212" fill="none" stroke="url(#stG)" strokeWidth="6.5" strokeLinecap="round"/>
       <path id="stem-r" d="M348,555 C350,513 354,476 357,444 C360,412 360,380 352,350 C348,334 344,314 348,296" fill="none" stroke="url(#stG2)" strokeWidth="5" strokeLinecap="round"/>
-      <g id="leaves-g" opacity="0">{leaves.map((leaf, i) => (<path key={i} d={leaf.d} fill={`url(#${leaf.g})`}/>))}</g>
+      
       <g filter="url(#glowF)"><Flower id="flower-l" cx={160} cy={295} size={0.87} gradId="pg2" centerGradId="cg2"/></g>
       <g filter="url(#glowF)"><Flower id="flower-m" cx={260} cy={212} size={1.06} gradId="pg1" centerGradId="cg1"/></g>
       <g filter="url(#glowF)"><Flower id="flower-r" cx={348} cy={296} size={0.87} gradId="pg3" centerGradId="cg2"/></g>
@@ -309,33 +347,36 @@ export default function App() {
   const [isYesClicked, setIsYesClicked] = useState(false);
 
   const [selectedWish, setSelectedWish] = useState(null);
-  const wishesData = [
-    "Semoga di umur yang baru ini, kamu semakin bahagia dan selalu dikelilingi orang yang tulus menyayangimu. ✨",
-    "Semoga semua cita-cita dan harapan yang kamu pendam bisa segera terwujud satu per satu tahun ini. 🌸",
-    "Semoga selalu diberikan kesehatan, kurang-kurangin overthinking, dan jangan lupa bahagia hari ini! 💕",
-    "Semoga hari-harimu ke depan penuh dengan kejutan manis yang tak terduga. 🎁",
-    "Dan semoga... kita bisa terus merayakan momen-momen indah seperti ini bersama-sama di tahun-tahun berikutnya. 🥰"
-  ];
 
-  const nightMemories = [
-    'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 
-    'foto1.jpg', 'foto2.jpg', 'foto3.jpg'
-  ];
-
+  // Setiap bintang ditempatkan di "zona" grid sendiri (bukan posisi acak murni)
+  // agar tidak saling tumpang tindih, lalu hanya bergoyang pelan (drift kecil)
+  // di sekitar titik itu -- bukan lagi mengembara jauh melintasi layar.
+  // Ini yang memperbaiki bug "bintang menghindar" saat diklik/ditap.
   const starPaths = useMemo(() => {
-    return wishesData.map(() => {
-      const pathX = Array.from({length: 4}, () => Math.floor(Math.random() * 80 + 5) + 'vw');
-      const pathY = Array.from({length: 4}, () => Math.floor(Math.random() * 65 + 15) + 'vh');
-      pathX.push(pathX[0]);
-      pathY.push(pathY[0]);
-      return { x: pathX, y: pathY };
+    const n = WISHES_DATA.length;
+    const cols = Math.max(1, Math.ceil(Math.sqrt(n)));
+    const rows = Math.max(1, Math.ceil(n / cols));
+    const cellW = 76 / cols; // area 12vw - 88vw
+    const cellH = 52 / rows; // area 22vh - 74vh (aman dari judul & tepi bawah)
+
+    return WISHES_DATA.map((_, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const baseX = 12 + col * cellW + cellW * 0.2 + Math.random() * cellW * 0.6;
+      const baseY = 22 + row * cellH + cellH * 0.2 + Math.random() * cellH * 0.6;
+      const driftX = 2.5 + Math.random() * 2.5;
+      const driftY = 2.5 + Math.random() * 2.5;
+      return {
+        x: [`${baseX}vw`, `${(baseX + driftX).toFixed(1)}vw`, `${(baseX - driftX * 0.7).toFixed(1)}vw`, `${baseX}vw`],
+        y: [`${baseY}vh`, `${(baseY - driftY).toFixed(1)}vh`, `${(baseY + driftY * 0.8).toFixed(1)}vh`, `${baseY}vh`],
+      };
     });
   }, []);
 
   const floatingPhotosConfig = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
       id: i,
-      img: nightMemories[i % nightMemories.length],
+      img: MEMORY_PHOTOS[i % MEMORY_PHOTOS.length],
       x: Math.random() * 85 + 5,
       duration: 18 + Math.random() * 8, 
       delay: Math.random() * 8, 
@@ -346,19 +387,10 @@ export default function App() {
   }, []);
 
   const noTexts = ["Enggak", "Eh, kepencet ya? 🤨", "Loh, masih 'Enggak'?! 🧐", "Mulai ngajak ribut nih... 😤", "Yakin? Nanti nyesel lho 🫣", "Tega banget... 💔"];
-  // PIN BARU SESUAI PERMINTAAN KLIEN
-  const CORRECT_PIN = '100705';
-
-  const timelineData = [
-    { id: 1, title: 'That Captivating Smile', desc: 'Melihat senyummu selalu menjadi bagian terbaik dalam hariku.', img: 'foto1.jpg' },
-    { id: 2, title: 'Effortlessly Beautiful', desc: 'Tidak peduli dari sudut mana, kamu selalu berhasil membuatku kagum.', img: 'foto2.jpg' },
-    { id: 3, title: 'My Favorite View', desc: 'Dan di antara semua hal indah di dunia, memandangi wajahmu adalah favoritku.', img: 'foto3.jpg' },
-  ];
-
-  const marqueePhotos = ['foto1.jpg', 'foto2.jpg', 'foto3.jpg'];
-  const infinitePhotos = [...marqueePhotos, ...marqueePhotos, ...marqueePhotos, ...marqueePhotos, ...marqueePhotos];
-
-  const letterText = "Hai, Beautiful.\n\nSelamat ulang tahun! Website ini sengaja kubuat khusus untukmu, karena kado biasa rasanya tidak cukup untuk mengekspresikan betapa berartinya dirimu bagiku.\n\nTerima kasih sudah terlahir ke dunia ini dan menjadi versi terbaik dari dirimu. Semoga di umur yang baru ini, semua harapan dan impianmu perlahan menjadi nyata. Aku akan selalu ada di sini untuk mendukungmu, dalam setiap langkahmu.\n\nI love you, now and always. ✨";
+  // Satu "unit" strip diulang cukup banyak (12x) supaya lebih panjang dari lebar layar manapun,
+  // lalu unit itu digandakan 2x agar animasi loop-nya mulus tanpa terlihat "meloncat" atau kosong di ujung.
+  const stripUnit = Array.from({ length: 12 }, (_, i) => TIMELINE_DATA[i % TIMELINE_DATA.length].img);
+  const infinitePhotos = [...stripUnit, ...stripUnit];
 
   const handleOpenGate = () => { setStep(1); if (audioRef.current) audioRef.current.play(); };
 
@@ -386,7 +418,6 @@ export default function App() {
     <div className="min-h-screen bg-[#fff5f7] relative overflow-x-hidden font-quicksand text-gray-800 selection:bg-pink-300 selection:text-white">
       <audio ref={audioRef} src="/stuck-with-u.mp3" loop preload="auto"/>
       
-      {/* GLOBAL AURORA BACKGROUND UNTUK STEP -1, 0, 1, 2 */}
       {step < 3 && <AuroraBackground />}
 
       <AnimatePresence mode="wait">
@@ -401,15 +432,12 @@ export default function App() {
             <AnimatePresence mode="wait">
               {!isYesClicked ? (
                 <motion.div key="question" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full max-w-md relative z-10">
-                  <motion.img 
-                    animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                    src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} 
-                  />
+                  <img src="/images/bubu-dudu-ask.gif" alt="Cute Ask" className="w-40 md:w-56 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} />
+                  
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-8 px-4 leading-relaxed drop-shadow-sm">Hai, sebelum lanjut... Kamu sayang aku nggak?</h2>
                   <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 w-full min-h-[140px] relative px-2">
                     <motion.button 
                       whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.85 }} 
-                      // TAMBAHAN CONFETTI INSTAN SAAT TOMBOL YES DIKLIK
                       onClick={() => {
                         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ffc0cb','#ff69b4','#ffffff'] });
                         setIsYesClicked(true);
@@ -435,7 +463,8 @@ export default function App() {
                 </motion.div>
               ) : (
                 <motion.div key="answered" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center w-full max-w-md relative z-10">
-                  <motion.img animate={{ rotate: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} />
+                  <img src="/images/bubu-dudu-happy.gif" alt="Cute Happy" className="w-48 md:w-64 mb-6 drop-shadow-2xl" onError={(e) => e.target.style.display = 'none'} />
+                  
                   <h2 className="font-pacifico text-3xl md:text-4xl text-pink-500 mb-4 drop-shadow-sm">Hehehe, I love you too! 💕</h2>
                   <p className="text-gray-600 font-medium md:text-lg mb-8 px-4 bg-white/40 p-4 rounded-2xl backdrop-blur-sm border border-white/50 shadow-sm">Makasih ya udah jujur. Nah, sekarang aku punya sesuatu yang spesial buat kamu...</p>
                   <motion.button whileHover={{ scale: 1.05, boxShadow: "0px 15px 25px rgba(236,72,153,0.5)" }} whileTap={{ scale: 0.95 }} onClick={() => setStep(0)} 
@@ -454,7 +483,6 @@ export default function App() {
             className="fixed inset-0 flex flex-col items-center justify-center z-50 cursor-pointer" onClick={handleOpenGate}
           >
             <motion.div animate={{ y: [0,-15,0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="relative">
-              {/* EFEK GLOWING DI BELAKANG KADO */}
               <div className="absolute inset-0 bg-pink-400/40 blur-[50px] rounded-full scale-150 animate-pulse" />
               <motion.img whileHover={{ scale: 1.08, rotate: 2 }} whileTap={{ scale: 0.9 }} src="/images/kado.png" className="h-48 md:h-64 w-auto object-contain drop-shadow-2xl mb-8 relative z-10" alt="Kado"/>
             </motion.div>
@@ -481,7 +509,7 @@ export default function App() {
             </div>
 
             <div className="w-full max-w-4xl px-4 md:px-8 py-10 flex flex-col gap-24 md:gap-32">
-              {timelineData.map((item, index) => {
+              {TIMELINE_DATA.map((item, index) => {
                 const isEven = index % 2 === 0;
                 return (
                   <motion.div key={item.id} initial={{ opacity: 0, x: isEven ? -50 : 50, y: 50 }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ type: 'spring', bounce: 0.4, duration: 1.2 }}
@@ -503,11 +531,13 @@ export default function App() {
             </div>
 
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 50 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true }} transition={{ type: 'spring', bounce: 0.5 }} className="mt-32 flex flex-col items-center bg-white/80 backdrop-blur-2xl p-8 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(244,63,94,0.15)] border-2 border-white">
-              <motion.div animate={{ rotateY: [0, 180, 360] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mb-6 text-4xl shadow-inner border border-white/60">
+              
+              <div className="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mb-6 text-4xl shadow-inner border border-white/60">
                 🔒
-              </motion.div>
-              <h2 className="font-pacifico text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-2">Secret Vault</h2>
-              <p className="text-gray-500 mb-10 text-center text-sm md:text-base font-bold max-w-xs bg-pink-50/50 py-2 px-4 rounded-full">Enter 6-digit code (DDMMYY)</p>
+              </div>
+              
+              <h2 className="font-pacifico text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-2 leading-[1.4] py-2">Secret Vault</h2>
+              <p className="text-gray-500 mb-10 text-center text-sm md:text-base font-bold max-w-xs bg-pink-50/50 py-2 px-4 rounded-full">Masukkan 6 digit tanggal lahirmu (DDMMYY)</p>
               
               <motion.div animate={pinError ? { x: [-10,10,-10,10,0] } : {}} transition={{ duration: 0.4 }} className="flex gap-4 mb-10">
                 {[...Array(6)].map((_, i) => (
@@ -541,15 +571,14 @@ export default function App() {
           <motion.div key="letter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }}
             className="w-full h-screen fixed inset-0 flex items-center justify-center overflow-hidden z-40"
           >
-            {/* Background Marquee */}
-            <div className="absolute top-2 md:top-6 left-0 w-[120%] -translate-x-[10%] -rotate-6 pointer-events-none opacity-60 md:opacity-75">
-              <motion.div animate={{ x: ['0%','-50%'] }} transition={{ ease: 'linear', duration: 30, repeat: Infinity }} className="flex gap-4 md:gap-8 w-max">
-                {infinitePhotos.map((img, idx) => (<div key={`top-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-sm shrink-0 border border-white/50"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
+            <div className="absolute top-2 md:top-6 left-0 w-[200%] -translate-x-1/4 -rotate-6 pointer-events-none opacity-60 md:opacity-75">
+              <motion.div animate={{ x: ['0%','-50%'] }} transition={{ ease: 'linear', duration: 45, repeat: Infinity }} className="flex w-max">
+                {infinitePhotos.map((img, idx) => (<div key={`top-${idx}`} className="w-24 md:w-44 aspect-square shrink-0 overflow-hidden border-2 border-white"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
               </motion.div>
             </div>
-            <div className="absolute bottom-2 md:bottom-6 left-0 w-[120%] -translate-x-[10%] -rotate-6 pointer-events-none opacity-60 md:opacity-75">
-              <motion.div animate={{ x: ['-50%','0%'] }} transition={{ ease: 'linear', duration: 25, repeat: Infinity }} className="flex gap-4 md:gap-8 w-max">
-                {infinitePhotos.map((img, idx) => (<div key={`bot-${idx}`} className="w-24 md:w-44 aspect-square bg-white p-1.5 pb-6 md:pb-12 shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-sm shrink-0 border border-white/50"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
+            <div className="absolute bottom-2 md:bottom-6 left-0 w-[200%] -translate-x-1/4 -rotate-6 pointer-events-none opacity-60 md:opacity-75">
+              <motion.div animate={{ x: ['-50%','0%'] }} transition={{ ease: 'linear', duration: 38, repeat: Infinity }} className="flex w-max">
+                {infinitePhotos.map((img, idx) => (<div key={`bot-${idx}`} className="w-24 md:w-44 aspect-square shrink-0 overflow-hidden border-2 border-white"><img src={`/images/${img}`} className="w-full h-full object-cover" alt="Memory" onError={(e) => { e.target.style.display='none'; }}/></div>))}
               </motion.div>
             </div>
             <motion.img animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} src="/images/sparkles.png" className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-20 z-10" onError={(e) => e.target.style.display='none'}/>
@@ -557,9 +586,9 @@ export default function App() {
             <motion.div initial={{ opacity: 0, scale: 0.8, y: 30 }} animate={{ opacity: 1, scale: 1, y: [0,-10,0] }} transition={{ type: 'spring', bounce: 0.4, duration: 1.5, delay: 0.5, y: { repeat: Infinity, duration: 5, ease: 'easeInOut' } }}
               className="w-[88%] max-w-2xl bg-white/85 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-14 shadow-[0_30px_60px_-15px_rgba(244,63,94,0.3)] border-2 border-white text-center relative z-20 flex flex-col items-center"
             >
-              <h2 className="font-pacifico text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-6 drop-shadow-sm">My Letter to You</h2>
+              <h2 className="font-pacifico text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-6 drop-shadow-sm leading-[1.4] py-2">My Letter to You</h2>
               <div className="max-h-[35vh] md:max-h-[38vh] w-full overflow-y-auto pr-3 mb-8 text-gray-700 leading-relaxed md:text-xl font-medium text-left [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-pink-50/50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-pink-300 [&::-webkit-scrollbar-thumb]:rounded-full shadow-inner bg-white/40 p-4 rounded-2xl border border-white">
-                <TypewriterText text={letterText} delay={1000} />
+                <TypewriterText text={SURAT_CINTA} delay={1000} />
               </div>
               <motion.button whileHover={{ scale: 1.05, boxShadow: "0px 10px 25px rgba(236,72,153,0.4)" }} whileTap={{ scale: 0.95 }} onClick={() => setStep(3)}
                 className="w-full md:w-auto bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-4 px-12 rounded-full transition-all duration-300 cursor-pointer text-sm md:text-lg border border-pink-300/50">
@@ -602,9 +631,9 @@ export default function App() {
         {/* ===== STEP 4: NIGHT OF WISHES ===== */}
         {step === 4 && (
           <motion.div key="wishes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }}
-            className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden bg-[#050810]"
+            className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden"
+            style={{ background: 'radial-gradient(ellipse at 50% 15%, #2a0d24 0%, #170b23 30%, #0a0a18 62%, #050810 100%)' }}
           >
-            {/* BACKGROUND BERTABUR BINTANG */}
             <div className="fixed inset-0 opacity-40 z-0 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 200px 50px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 240px 150px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 280px 90px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 320px 140px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 360px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 400px 110px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 440px 60px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 480px 180px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 520px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 560px 150px, #ffffff, rgba(0,0,0,0))', backgroundSize: '200px 200px' }} />
 
@@ -634,34 +663,51 @@ export default function App() {
               </motion.p>
             </div>
 
-            <div className="absolute inset-0 z-20 pointer-events-none">
-              {wishesData.map((wish, i) => (
-                <motion.button key={`wish-btn-${i}`}
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+            {/* PENGUNCI BINTANG LAIN SAAT KARTU DIBUKA (MENCEGAH BUG SPAM) */}
+            <div className={`absolute inset-0 z-20 ${selectedWish ? 'pointer-events-none' : ''}`}>
+              {WISHES_DATA.map((wish, i) => {
+                // Trigger dengan onPointerDown: kartu terbuka SEKETIKA saat jari/kursor
+                // menyentuh bintang di posisinya SAAT ITU JUGA, tidak menunggu jari
+                // diangkat -- jadi walau bintang terus bergoyang pelan, tap tidak akan
+                // pernah "meleset" hanya karena bintang sudah bergeser sedikit.
+                const openWish = (e) => {
+                  if (e) { e.preventDefault(); e.stopPropagation(); }
+                  if (!selectedWish) {
                     setSelectedWish(wish);
                     confetti({ particleCount: 70, spread: 80, origin: { y: 0.8 }, colors: ['#ffc0cb','#ffd700','#ffffff', '#ff69b4'] });
-                  }}
-                  initial={{ scale: 0, opacity: 0, x: starPaths[i].x[0], y: starPaths[i].y[0] }}
-                  animate={{ 
-                    x: starPaths[i].x,
-                    y: starPaths[i].y, 
-                    scale: [1, 1.3, 1], 
-                    opacity: [0.6, 1, 0.6]
-                  }}
-                  transition={{ 
-                    x: { duration: 40 + i * 5, repeat: Infinity, ease: 'linear' },
-                    y: { duration: 45 + i * 5, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-                    opacity: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-                  }}
-                  style={{ position: 'absolute' }}
-                  className="w-16 h-16 flex items-center justify-center rounded-full bg-rose-400/20 text-3xl drop-shadow-[0_0_25px_rgba(251,113,133,1)] border border-rose-300/40 active:scale-75 pointer-events-auto cursor-pointer relative before:absolute before:inset-[-30px] before:content-[''] before:rounded-full transition-transform"
-                >
-                  ✨
-                </motion.button>
-              ))}
+                  }
+                };
+                return (
+                  <motion.button key={`wish-btn-${i}`}
+                    onPointerDown={openWish}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    initial={{ scale: 0, opacity: 0, x: starPaths[i].x[0], y: starPaths[i].y[0] }}
+                    animate={{
+                      x: starPaths[i].x,
+                      y: starPaths[i].y,
+                      scale: [1, 1.25, 1],
+                      opacity: [0.65, 1, 0.65]
+                    }}
+                    transition={{
+                      x: { duration: 9 + i * 1.4, repeat: Infinity, ease: 'easeInOut' },
+                      y: { duration: 11 + i * 1.4, repeat: Infinity, ease: 'easeInOut' },
+                      scale: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 },
+                      opacity: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 },
+                    }}
+                    whileTap={{ scale: 0.8 }}
+                    className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-full text-3xl md:text-4xl border border-rose-300/40 pointer-events-auto cursor-pointer select-none relative before:absolute before:inset-[-24px] before:content-[''] before:rounded-full"
+                    style={{
+                      position: 'absolute',
+                      touchAction: 'manipulation',
+                      WebkitTapHighlightColor: 'transparent',
+                      background: 'radial-gradient(circle at 35% 30%, rgba(255,220,230,0.55), rgba(251,113,133,0.28) 45%, rgba(251,113,133,0.05) 75%)',
+                      filter: 'drop-shadow(0 0 18px rgba(251,113,133,0.85))',
+                    }}
+                  >
+                    ✨
+                  </motion.button>
+                );
+              })}
             </div>
 
             <AnimatePresence>
@@ -676,7 +722,7 @@ export default function App() {
                     className="bg-white/95 p-8 md:p-10 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] max-w-sm w-full text-center border-4 border-pink-100 relative bg-[url('/images/washi-tape.png')] bg-no-repeat bg-[length:60px] bg-[top_10px_center]"
                   >
                     <div className="text-5xl drop-shadow-lg mb-6 mt-4">💌</div>
-                    <p className="text-gray-700 font-bold leading-relaxed mb-8 md:text-lg">{selectedWish}</p>
+                    <p className="text-gray-700 font-bold leading-relaxed mb-8 md:text-lg whitespace-pre-line">{selectedWish}</p>
                     <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setSelectedWish(null)} 
                       className="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3 px-10 rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.3)] transition-all cursor-pointer w-full text-lg border border-pink-300/50">
                       Aamiin ✨
